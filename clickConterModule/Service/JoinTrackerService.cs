@@ -16,11 +16,42 @@ namespace clickConterModule.Service
 
         private IJoinTrackerRepo repoTemp;
         private IJoinTrackerLogRepo repoLog;
+        private uint numberOfInputs;
+        private bool debug = false;
 
-        public JoinTrackerService(IJoinTrackerRepo repoTemp, IJoinTrackerLogRepo repoLog)
+        public JoinTrackerService(IJoinTrackerRepo repoTemp, IJoinTrackerLogRepo repoLog, uint numberOfInputs)
         {
             this.repoTemp = repoTemp;
             this.repoLog = repoLog;
+            this.numberOfInputs = numberOfInputs;
+        }
+
+        public void PostAndClear()
+        {
+            try
+            {
+                for (uint i = 1; i < numberOfInputs + 1; i++)
+                {
+                    PostToLog(i, "morning");
+                    PostToLog(i, "day");
+                    PostToLog(i, "evening");
+                    PostToLog(i, "night");
+                }
+
+                if (debug) CrestronConsole.PrintLine("Post to log {0} inputs\n", numberOfInputs);
+
+                repoTemp.DeleteAll();
+                ClearLog();
+
+                if (debug) CrestronConsole.PrintLine("Clear logs");
+
+
+            }
+            catch (Exception e)
+            {
+                throw(e);
+            }
+
         }
 
         public void PostToTempLog(uint joinNumber)
@@ -39,18 +70,6 @@ namespace clickConterModule.Service
 
             }
             catch (Exception e)
-            {
-                throw (e);
-            }
-        }
-
-        public void ClearTempLog() 
-        {
-            try 
-            {
-                repoTemp.DeleteAll();
-            }
-            catch(Exception e)
             {
                 throw (e);
             }
@@ -75,31 +94,170 @@ namespace clickConterModule.Service
  
         }
 
-        public uint GetNumberOfClickForWeek(uint joinNumber)
+        private uint GetAllClickForWeek()
         {
-            var today = DateTime.Now;
-            var lastWeek = today.AddDays(-7);
-            var quantaty = repoLog.GetByTime(joinNumber, lastWeek, today).ToArray().Length;
-            return (uint)quantaty;
+            uint total = 0;
+
+            for(uint i = 1; i < numberOfInputs + 1; i++)
+            {
+                total = total + GetNumberOfClickForWeek(i);
+            }
+
+            if (debug) CrestronConsole.PrintLine("Total click for week: {0}\n", total);
+
+            return total;
         }
 
-        public uint GetNumberOfClickForMonth(uint joinNumber)
+        private uint GetAllClickForMonth()
         {
-            var today = DateTime.Now;
-            var lastMonth = today.AddMonths(-1);
-            var quantaty = repoLog.GetByTime(joinNumber, lastMonth, today).ToArray().Length;
-            return (uint)quantaty;
+            uint total = 0;
+
+            for (uint i = 1; i < numberOfInputs + 1; i++)
+            {
+                total = total + GetNumberOfClickForMonth(i);
+            }
+
+            if (debug) CrestronConsole.PrintLine("Total click for month: {0}\n", total);
+
+            return total;
         }
 
-        public uint GetNumberOfClickForYear(uint joinNumber)
+        private uint GetAllClickForYear()
         {
-            var today = DateTime.Now;
-            var lastYear = today.AddYears(-1);
-            var quantaty = repoLog.GetByTime(joinNumber, lastYear, today).ToArray().Length;
-            return (uint)quantaty;
+            uint total = 0;
+
+            for (uint i = 1; i < numberOfInputs + 1; i++)
+            {
+                total = total + GetNumberOfClickForYear(i);
+            }
+
+            if (debug) CrestronConsole.PrintLine("Total click for year: {0}\n", total);
+
+            return total;
         }
 
-        public void PostToLog(uint joinNumber, string time)
+        private uint GetNumberOfClickForWeek(uint joinNumber)
+        {
+            var today2355 = DateTime.Today.AddHours(23).AddMinutes(55);
+            var lastWeek = today2355.AddDays(-7);
+            var jts = repoLog.GetByTime(joinNumber, lastWeek, today2355);
+            uint quantaty = 0;
+
+            foreach (var jt in jts)
+            {
+                quantaty = quantaty + jt.Quantity;
+            }
+
+            return quantaty;
+        }
+
+        private uint GetNumberOfClickForMonth(uint joinNumber)
+        {
+            var today2355 = DateTime.Today.AddHours(23).AddMinutes(55);
+            var lastMonth = today2355.AddMonths(-1);
+
+            var jts = repoLog.GetByTime(joinNumber, lastMonth, today2355);
+            uint quantaty = 0;
+            
+            foreach (var jt in jts)
+            {
+                quantaty = quantaty + jt.Quantity;
+            }
+
+            return quantaty;
+        }
+
+        private uint GetNumberOfClickForYear(uint joinNumber)
+        {
+            var today2355 = DateTime.Today.AddHours(23).AddMinutes(55);
+            var lastYear = today2355.AddYears(-1);
+
+            var jts = repoLog.GetByTime(joinNumber, lastYear, today2355);
+            uint quantaty = 0;
+
+            foreach (var jt in jts)
+            {
+                quantaty = quantaty + jt.Quantity;
+            }
+
+            return quantaty;
+        }
+
+        public uint GetForWeek(uint joinNumber)
+        {
+            uint week = GetNumberOfClickForWeek(joinNumber);
+            uint total = GetAllClickForWeek();
+            uint result = 0;
+            if (total != 0)
+                result = (week * 100 / total);
+
+            if (debug) CrestronConsole.PrintLine("Total click for input {0} for week {1}\n", joinNumber, week);
+            if (debug) CrestronConsole.PrintLine("Total click for input {0} for week {1}%\n", joinNumber, result);
+
+            return result;
+        }
+
+        public uint GetForMonth(uint joinNumber)
+        {
+            uint month = GetNumberOfClickForMonth(joinNumber);
+            uint total = GetAllClickForMonth();
+            uint result = 0;
+            if (total != 0)
+                result = (month * 100 / total);
+
+            if (debug) CrestronConsole.PrintLine("Total click for input {0} for month {1}\n", joinNumber, month);
+            if (debug) CrestronConsole.PrintLine("Total click for input {0} for month {1}%\n", joinNumber, result);
+
+            return result;
+        }
+
+        public uint GetForYear(uint joinNumber)
+        {
+            uint year = GetNumberOfClickForYear(joinNumber);
+            uint total = GetAllClickForYear();
+            uint result = 0;
+            if (total != 0)
+                result = (year * 100 / total);
+
+            if (debug) CrestronConsole.PrintLine("Total click for input {0} for year {1}\n", joinNumber, year);
+            if (debug) CrestronConsole.PrintLine("Total click for input {0} for year {1}%\n", joinNumber, result);
+
+            return result;
+        }
+
+        public uint GetStatisticForTime(uint joinNumber, string time)
+        {
+            var today2355 = DateTime.Today.AddHours(23).AddMinutes(55);
+            var lastYear = today2355.AddYears(-1);
+
+            var jts = repoLog.GetByTime(joinNumber, lastYear, today2355);
+            var jtsTime = jts.Where(jt => jt.Time == time);
+
+            uint result = 0;
+            uint total = 0;
+            uint totalByTime = 0;
+
+            foreach (var jt in jts)
+            {
+                total = total + jt.Quantity;
+            }
+
+            if (debug) CrestronConsole.PrintLine("Total click for input {0} total {1}%\n", joinNumber, total);
+
+            foreach (var jtTime in jtsTime)
+            {
+                totalByTime = totalByTime + jtTime.Quantity;
+            }
+
+            if (debug) CrestronConsole.PrintLine("Total click for input {0} for {1} time {2}%\n", joinNumber, time, totalByTime);
+
+            if (total != 0)
+                result = totalByTime * 100 / total;
+
+            return result;
+        }
+
+        private void PostToLog(uint joinNumber, string time)
         {
             try
             {
@@ -109,15 +267,19 @@ namespace clickConterModule.Service
                 {
                     case "morning":
                         quantaty = (uint)GetForMorning(joinNumber).ToArray().Length;
+                        if (debug) CrestronConsole.PrintLine("total for input {0} today morning: {1}\n", joinNumber, quantaty);
                         break;
                     case "day":
                         quantaty = (uint)GetForDay(joinNumber).ToArray().Length;
+                        if (debug) CrestronConsole.PrintLine("total for input {0} today day: {1}\n", joinNumber, quantaty);
                         break;
                     case "evening":
                         quantaty = (uint)GetForEvening(joinNumber).ToArray().Length;
+                        if (debug) CrestronConsole.PrintLine("total for input {0} today evening: {1}\n", joinNumber, quantaty);
                         break;
                     case "night":
                         quantaty = (uint)GetForNight(joinNumber).ToArray().Length;
+                        if (debug) CrestronConsole.PrintLine("total for input {0} today night: {1}\n", joinNumber, quantaty);
                         break;
                     default:
                         break;

@@ -7,3 +7,12 @@ C:\Users\shiry\crestronProject\crestronMetric\clickConterModule\clickConterModul
 C:\Users\shiry\crestronProject\crestronMetric\clickConterModule\clickConterModule\obj\Debug\clickConterModule.dll
 C:\Users\shiry\crestronProject\crestronMetric\clickConterModule\clickConterModule\obj\Debug\clickConterModule.pdb
 C:\Users\shiry\crestronProject\crestronMetric\clickConterModule\clickConterModule\bin\Debug\SimplSharpTimerEventInterface.dll
+C:\projects\crestron\clickModule\clickConterModule\bin\Debug\clickConterModule.dll
+C:\projects\crestron\clickModule\clickConterModule\bin\Debug\clickConterModule.pdb
+C:\projects\crestron\clickModule\clickConterModule\bin\Debug\Newtonsoft.Json.Compact.dll
+C:\projects\crestron\clickModule\clickConterModule\bin\Debug\SimplSharpCustomAttributesInterface.dll
+C:\projects\crestron\clickModule\clickConterModule\bin\Debug\SimplSharpHelperInterface.dll
+C:\projects\crestron\clickModule\clickConterModule\bin\Debug\SimplSharpTimerEventInterface.dll
+C:\projects\crestron\clickModule\clickConterModule\obj\Debug\ResolveAssemblyReference.cache
+C:\projects\crestron\clickModule\clickConterModule\obj\Debug\clickConterModule.dll
+C:\projects\crestron\clickModule\clickConterModule\obj\Debug\clickConterModule.pdb

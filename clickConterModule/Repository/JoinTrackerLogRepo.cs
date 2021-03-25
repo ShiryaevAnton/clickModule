@@ -98,8 +98,6 @@ namespace clickConterModule.Repository
                                                 .Where(l => DateTime.Parse(l.Day) >= from)
                                                 .Where(l => DateTime.Parse(l.Day) <= to)
                                                 .ToList();
-
-
                 return joinTrackers;
             }
             catch (Exception e)

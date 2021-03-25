@@ -16,16 +16,23 @@ namespace clickConterModule
         /// SIMPL+ can only execute the default constructor. If you have variables that require initialization, please
         /// use an Initialize method
         /// </summary>
+        /// 
 
-        JoinTrackerRepo joinRepo;
-        JoinTrackerLogRepo joinRepoLog;
+        public ClickCounter()
+        {
+
+        }
+
+        IJoinTrackerRepo joinRepo;
+        IJoinTrackerLogRepo joinRepoLog;
         JoinTrackerService service;
 
         public void Init(uint numberOfInputs)
         {
-            joinRepo = new JoinTrackerRepo();
+            //joinRepo = new JoinTrackerRepo();
+            joinRepo = new JoinTrackerInMemoryRepo();
             joinRepoLog = new JoinTrackerLogRepo();
-            service = new JoinTrackerService(joinRepo, joinRepoLog);
+            service = new JoinTrackerService(joinRepo, joinRepoLog, numberOfInputs);
         }
 
         public void SaveOneClick(uint joinNumber)
@@ -40,31 +47,51 @@ namespace clickConterModule
             }
         }
 
-        public void CleanUp(uint numberOfInputs) 
+        public void PostAndClear() 
         {
             try
             {
-                for (uint i = 1; i < numberOfInputs + 1; i++)
-                {
-                    service.PostToLog(i, "morning");
-                    service.PostToLog(i, "day");
-                    service.PostToLog(i, "evening");
-                    service.PostToLog(i, "night");
-                }
-
-                service.ClearTempLog();
-                service.ClearLog();
-
+                service.PostAndClear();
             }
             catch (Exception e)
             {
                 CrestronConsole.Print(e.ToString());
-            }
- 
+            } 
         }
 
-        public ClickCounter()
+        public uint GetForWeek(uint joinNumber)
         {
+            return service.GetForWeek(joinNumber);
+        }
+
+        public uint GetForMonth(uint joinNumber)
+        {
+            return service.GetForMonth(joinNumber);
+        }
+
+        public uint GetForYear(uint joinNumber)
+        {
+            return service.GetForYear(joinNumber);
+        }
+
+        public uint GetStatisticMorningTime(uint joinNumber)
+        {
+            return service.GetStatisticForTime(joinNumber, "morning");
+        }
+
+        public uint GetStatisticDayTime(uint joinNumber)
+        {
+            return service.GetStatisticForTime(joinNumber, "day");
+        }
+
+        public uint GetStatisticEveningTime(uint joinNumber)
+        {
+            return service.GetStatisticForTime(joinNumber, "evening");
+        }
+
+        public uint GetStatisticNightTime(uint joinNumber)
+        {
+            return service.GetStatisticForTime(joinNumber, "night");
         }
     }
 }
