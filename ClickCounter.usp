@@ -19,6 +19,7 @@ Comments:
 // #HINT ""
 // #DEFINE_CONSTANT
 // #CATEGORY "" 
+#CATEGORY "31" // Digital Operations
 // #PRINT_TO_TRACE
 // #DIGITAL_EXPAND 
 // #ANALOG_SERIAL_EXPAND 
@@ -27,6 +28,11 @@ Comments:
 #DEFAULT_VOLATILE
 #ENABLE_STACK_CHECKING
 #ENABLE_TRACE
+#DEFINE_CONSTANT NUMBER_OF_INPUTS 10
+
+#USER_SIMPLSHARP_LIBRARY "clickConterModule"
+
+
 // #ENCODING_ASCII
 // #ENCODING_UTF16
 // #ENCODING_INHERIT_FROM_PARENT
@@ -48,13 +54,21 @@ Comments:
   DIGITAL, ANALOG and SERIAL INPUTS and OUTPUTS
   (Uncomment and declare inputs and outputs as needed)
 *******************************************************************************************/
-// DIGITAL_INPUT 
+DIGITAL_INPUT DailyLog;
+DIGITAL_INPUT counterInput[10]; 
 // ANALOG_INPUT 
 // STRING_INPUT 
 // BUFFER_INPUT 
 
 // DIGITAL_OUTPUT 
-// ANALOG_OUTPUT 
+ANALOG_OUTPUT Weekly[NUMBER_OF_INPUTS];
+ANALOG_OUTPUT Monthly[NUMBER_OF_INPUTS];
+ANALOG_OUTPUT Yearly[NUMBER_OF_INPUTS];
+ANALOG_OUTPUT MorningTime[NUMBER_OF_INPUTS];
+ANALOG_OUTPUT DayTime[NUMBER_OF_INPUTS];
+ANALOG_OUTPUT EveningTime[NUMBER_OF_INPUTS];
+ANALOG_OUTPUT NightTime[NUMBER_OF_INPUTS];
+
 // STRING_OUTPUT 
 
 /*******************************************************************************************
@@ -118,6 +132,8 @@ MyStruct1 struct;
 // SIGNED_LONG_INTEGER
 // STRING
 
+ClickCounter clickCounter;
+
 /*******************************************************************************************
   Functions
   (Add any additional functions here)
@@ -159,12 +175,35 @@ String_Function MyStrFunction1()
   Event Handlers
   (Uncomment and declare additional event handlers as needed)
 *******************************************************************************************/
-/*
-PUSH input
+
+PUSH counterInput
 {
-    // TODO:  Add code here
+	integer joinNumber;
+	joinNumber = GetLastModifiedArrayIndex();
+	clickCounter.SaveOneClick(joinNumber);
 }
-*/
+
+
+PUSH DailyLog
+{
+	INTEGER i;
+
+	clickCounter.PostAndClear();
+
+	for(i = 1 to NUMBER_OF_INPUTS) 
+    {
+		Weekly[i] = clickCounter.GetForWeek(i);
+		Monthly[i] = clickCounter.GetForMonth(i);
+		Yearly[i] = clickCounter.GetForYear(i);
+		MorningTime[i] = clickCounter.GetStatisticMorningTime(i);
+		DayTime[i] = clickCounter.GetStatisticDayTime(i) ;
+		EveningTime[i] = clickCounter.GetStatisticEveningTime(i) ;
+		NightTime[i] = clickCounter.GetStatisticNightTime(i);
+
+	}	
+}
+
+
 
 /*
 RELEASE input
@@ -220,9 +259,11 @@ SOCKETSTATUS
   Uncomment and place one-time startup code here
   (This code will get called when the system starts up)
 *******************************************************************************************/
-/*
+
 Function Main()
 {
+	clickCounter.Init(NUMBER_OF_INPUTS);
+
     // TODO:  Add code here
     // Initialize declared global and local variables/arrays as needed.
 
@@ -233,5 +274,5 @@ Function Main()
     //   their correct values set until after the logic processor
     //   runs and propagates the values to them.
 }
-*/
+
 

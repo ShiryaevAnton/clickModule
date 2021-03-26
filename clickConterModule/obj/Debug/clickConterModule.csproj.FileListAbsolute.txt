@@ -16,3 +16,12 @@ C:\projects\crestron\clickModule\clickConterModule\bin\Debug\SimplSharpTimerEven
 C:\projects\crestron\clickModule\clickConterModule\obj\Debug\ResolveAssemblyReference.cache
 C:\projects\crestron\clickModule\clickConterModule\obj\Debug\clickConterModule.dll
 C:\projects\crestron\clickModule\clickConterModule\obj\Debug\clickConterModule.pdb
+C:\Users\chris\Documents\GitHub\clickModule\clickConterModule\bin\Debug\clickConterModule.dll
+C:\Users\chris\Documents\GitHub\clickModule\clickConterModule\bin\Debug\clickConterModule.pdb
+C:\Users\chris\Documents\GitHub\clickModule\clickConterModule\bin\Debug\Newtonsoft.Json.Compact.dll
+C:\Users\chris\Documents\GitHub\clickModule\clickConterModule\bin\Debug\SimplSharpCustomAttributesInterface.dll
+C:\Users\chris\Documents\GitHub\clickModule\clickConterModule\bin\Debug\SimplSharpHelperInterface.dll
+C:\Users\chris\Documents\GitHub\clickModule\clickConterModule\bin\Debug\SimplSharpTimerEventInterface.dll
+C:\Users\chris\Documents\GitHub\clickModule\clickConterModule\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\chris\Documents\GitHub\clickModule\clickConterModule\obj\Debug\clickConterModule.dll
+C:\Users\chris\Documents\GitHub\clickModule\clickConterModule\obj\Debug\clickConterModule.pdb

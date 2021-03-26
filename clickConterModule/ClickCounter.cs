@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 using Crestron.SimplSharp;     // For Basic SIMPL# Classes
-
+using Crestron.SimplSharp.CrestronIO;
 using clickConterModule.Entity;
 using clickConterModule.Repository;
 using clickConterModule.Service;
@@ -33,6 +33,27 @@ namespace clickConterModule
             joinRepo = new JoinTrackerInMemoryRepo();
             joinRepoLog = new JoinTrackerLogRepo();
             service = new JoinTrackerService(joinRepo, joinRepoLog, numberOfInputs);
+
+            try
+            {
+                if (!File.Exists("\\NVRAM\\ServerData\\jointracker.json"))
+                {
+                    byte[] emptyArray = new UTF8Encoding(true).GetBytes("[]");
+
+                    using (var fs = File.Create("\\NVRAM\\ServerData\\jointracker.json"))
+                    {
+
+                        fs.Write(emptyArray, 0, emptyArray.Length);
+                    }
+
+                }
+            
+
+            }
+            catch (Exception e)
+            {
+                CrestronConsole.ConsoleCommandResponse("Error with create server data struct", e.Message);
+            }         
         }
 
         public void SaveOneClick(uint joinNumber)
